@@ -3,6 +3,7 @@ import copy
 import time
 import inspect
 import numpy as np
+import pandas as pn
 from utilities_pkg.runtime_error_handler import runtime_error_handler
 from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
 
@@ -165,3 +166,16 @@ def find_most_frequent_symbol_in_array(array):
     unq_array, unq_array_cnt = np.unique(array, return_counts=True)
 
     return unq_array[np.argmax(unq_array_cnt)]
+
+
+def from_input_to_data(input_argument):
+    if isinstance(input_argument, str):
+        try:
+            input_argument = pn.read_pickle(filepath_or_buffer=input_argument)
+        except ValueError:
+            runtime_error_handler(str_="not_loadable", add=inspect.stack()[0][3])
+
+    if isinstance(input_argument, pn.DataFrame):
+        input_argument = input_argument.values
+
+    return input_argument[:, 0:input_argument.shape[1] - 2], input_argument[:, -1]

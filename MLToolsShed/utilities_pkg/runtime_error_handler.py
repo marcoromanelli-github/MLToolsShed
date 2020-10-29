@@ -8,6 +8,10 @@ def runtime_error_handler(str_, add):
         sys.exit("Folder creation failed in function " + str(add))
     if str_ == "unspecified_option":
         sys.exit("Unknown option in function " + str(add))
+    if str_ == "error_epochs_repartition":
+        sys.exit("Wrong epochs repartition in function " + str(add))
+    if str_ == "not_loadable":
+        sys.exit("Cannot load file in function " + str(add))
 
 
 def exception_call(idx, key_val):
