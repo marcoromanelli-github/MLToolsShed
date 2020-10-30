@@ -34,7 +34,7 @@ Package
 │   ├── test_0.py
 │   ├── test_1.py
 ├── README.md
-├── requirments.txt
+├── requirements.txt
 └── setup.py
 ```
 
