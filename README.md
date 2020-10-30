@@ -35,3 +35,6 @@ Package
 ├── required_pkg.txt
 └── setup.py
 ```
+
+### How to
+The folder [test_folder](https://github.com/marcoromanelli-github/MLToolsShed/tree/master/test_folder) contains examples which are useful to 
