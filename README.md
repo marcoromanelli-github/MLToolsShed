@@ -5,7 +5,7 @@
 # MLToolsShed
 <a href="https://github.com/marcoromanelli-github/MLToolsShed"><img src="https://github-link-card.s3.ap-northeast-1.amazonaws.com/marcoromanelli-github/MLToolsShed.png" width="460px"></a>
 
-A set of tools to make programming with TensorFlow and Keras more high level.
+A set of tools to make programming with [TensorFlow](https://www.tensorflow.org/) and [Keras](https://keras.io/) more high level.
 
 ### Intallation
 1. Install required packages by running
