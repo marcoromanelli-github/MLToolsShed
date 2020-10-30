@@ -42,7 +42,7 @@ Package
 The folder [MLToolsShed_test](https://github.com/marcoromanelli-github/MLToolsShed/tree/master/MLToolsShed_test) contains examples which are useful to understand how to use the library.
 
 #### read_CLI_options
-This is a function which might come in handy when launching heavy esperiments from the CMI. It reads all the parameters needed to build, tune and train a simple network model. For instance one could write the following script try_test.py
+This is a function which might come in handy when launching heavy experiments from the CMI. It reads all the parameters needed to build, tune and train a simple network model. For instance one could write the following script try_test.py
 ```python
 from MLToolsShed_test import test_0, test_1
 
