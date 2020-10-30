@@ -4,7 +4,8 @@ import time
 import inspect
 import numpy as np
 import pandas as pn
-from utilities_pkg.runtime_error_handler import runtime_error_handler
+from keras.utils import to_categorical
+from MLToolsShed.utilities_pkg.runtime_error_handler import runtime_error_handler
 from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
 
 
@@ -169,6 +170,11 @@ def find_most_frequent_symbol_in_array(array):
 
 
 def from_input_to_data(input_argument):
+    """
+    :param input_argument: it can be a string with the path to a saved pandas DataFrame or numpy array or a pandas DataFrame
+    or a numpy array; last column is the supervision, m classes should be all present at least once numbered from 0 to m-1
+    :return: a numpy array with features and one with one-hot coded supervisions
+    """
     if isinstance(input_argument, str):
         try:
             input_argument = pn.read_pickle(filepath_or_buffer=input_argument)
@@ -178,4 +184,4 @@ def from_input_to_data(input_argument):
     if isinstance(input_argument, pn.DataFrame):
         input_argument = input_argument.values
 
-    return input_argument[:, 0:input_argument.shape[1] - 2], input_argument[:, -1]
+    return input_argument[:, 0:input_argument.shape[1] - 2], to_categorical(y=input_argument[:, -1])
