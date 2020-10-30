@@ -64,10 +64,6 @@ foo@bar:~$ {'learning_rate': 0.001}
 ```
 After building the dictionary all the arguments can be directly passed to the handler for building, tuning and training the network.
 The options are:
-ACTIVATION_FNCTS = []
-METRICS_LIST = []
-LOSS = ''
-RESULT_FOLDER = ''
 | Option     | Description                                                                    |
 | ------     | -----------                                                                    |
 | -mn        | Model name.                                                                    |
