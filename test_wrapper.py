@@ -1,10 +1,10 @@
-from MLToolsShed.utilities_pkg import read_CLI_options
+from test_folder import test_0, test_1
 
 
-def test_0():
-    options_dict = read_CLI_options.read_command_line_options()
-    print(options_dict)
+def run_test():
+    #   test_0.test_0()
+    test_1.test_1()
 
 
 if __name__ == '__main__':
-    test_0()
+    run_test()

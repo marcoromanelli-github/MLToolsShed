@@ -6,6 +6,7 @@ os
 pandas
 pickle
 setuptools
+simplejson
 sklearn
 sys
 tensorflow
