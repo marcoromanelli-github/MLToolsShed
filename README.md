@@ -27,14 +27,14 @@ Package
 │       ├── read_CLI_options.py
 │       ├── runtime_error_handler.py
 │       └── utilities.py
-├── test_folder
+├── MLToolsShed_test
 │   ├── __init__.py
 │   ├── test_0.py
 │   ├── test_1.py
 ├── README.md
-├── required_pkg.txt
+├── requirments.txt
 └── setup.py
 ```
 
 ### How to
-The folder [test_folder](https://github.com/marcoromanelli-github/MLToolsShed/tree/master/test_folder) contains examples which are useful to 
+The folder [MLToolsShed_test](https://github.com/marcoromanelli-github/MLToolsShed/tree/master/MLToolsShed_test) contains examples which are useful to understand how to use the library.
