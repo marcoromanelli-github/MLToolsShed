@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="MLToolsShed",
     version="1.0.0",
-    author="Marco Romanelli",
+    author="marcoromanelli-github",
     author_email="marcoromane@gmail.com",
     description="A set of tools to make it easier to program with TensorFlow and Keras.",
     long_description=long_description,
