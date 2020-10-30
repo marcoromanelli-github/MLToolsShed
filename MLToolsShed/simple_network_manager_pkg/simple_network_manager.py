@@ -8,14 +8,14 @@ from MLToolsShed.utilities_pkg import gpu_setup, runtime_error_handler, utilitie
 
 class SimpleNetworkManager:
 
-    def __init__(self, number_of_classes, id_gpu, perc_gpu, learning_rate, hidden_neurons_cards, activation_fncts, epochs,
+    def __init__(self, id_gpu, perc_gpu, learning_rate, hidden_neurons_cards, activation_fncts, epochs,
                  batch_size, results_folder, metrics_list, loss='categorical_crossentropy'):
 
         np.random.seed(1234)
 
         #   ml hyper-parameters
         self.input_x_dimension = None
-        self.number_of_classes = number_of_classes
+        self.number_of_classes = None
         self.learning_rate = learning_rate
         self.hidden_neurons_cards = hidden_neurons_cards
         self.activation_fncts = activation_fncts
@@ -27,21 +27,20 @@ class SimpleNetworkManager:
         self.perc_gpu = perc_gpu
 
         #   ml store vectors
-        self.classifier_network_epochs = []
         self.classifier_network_loss_vec = []
-        self.classifier_network_categ_acc_vec = []
+        self.classifier_network_metrics_vec = []
         self.classifier_network_val_loss_vec = []
-        self.classifier_network_val_categ_acc_vec = []
+        self.classifier_network_val_metrics_vec = []
         self.classifier_network_evaluation_on_test_set_loss_vec = []
-        self.classifier_network_evaluation_on_test_set_accuracy_vec = []
+        self.classifier_network_evaluation_on_test_set_metrics_vec = []
         self.f1_value_training = []
         self.f1_value_validation = []
         self.f1_value_test = []
 
         self.results_folder = results_folder
+        utilities.create_folder(self.results_folder)
 
         self.check_activation_fncts_length()
-        self.model = self.build_simple_network()
 
     def check_activation_fncts_length(self):
         if len(self.activation_fncts) != len(self.hidden_neurons_cards) + 1:
@@ -107,6 +106,7 @@ class SimpleNetworkManager:
         validation_set, validation_supervision = utilities.from_input_to_data(validation_data)
 
         self.input_x_dimension = training_set.shape[1]
+        self.number_of_classes = training_supervision.shape[1]
 
         test_set, test_supervision = None, None
         do_test = False
@@ -135,28 +135,25 @@ class SimpleNetworkManager:
                                                               shuffle=True,
                                                               validation_data=(validation_set, validation_supervision))
 
-            self.classifier_network_epochs.append(len(history_classifier_net.history.get('loss')))
-            if len(history_classifier_net.history.get('loss')) != 1:
-                runtime_error_handler.runtime_error_handler(str_="error_epochs_repartition", add=inspect.stack()[0][3])
+            res = history_classifier_net.history.get('loss')[0]
+            self.classifier_network_loss_vec.append(res)
+            log_file.write("\nClassifier loss ---> " + str(res))
 
-            self.classifier_network_loss_vec.append(
-                history_classifier_net.history.get('loss')[0])
-            log_file.write("\nClassifier loss ---> " + str(history_classifier_net.history.get('loss')[0]))
+            res = []
+            for metric in self.metrics:
+                res.append(history_classifier_net.history.get(metric)[0])
+            self.classifier_network_metrics_vec.append(res)
+            log_file.write("\nClassifier metrics ---> " + str(res))
 
-            self.classifier_network_categ_acc_vec.append(
-                history_classifier_net.history.get('categorical_accuracy')[0])
-            log_file.write("\nClassifier categorical accuracy ---> " + str(
-                history_classifier_net.history.get('categorical_accuracy')[0]))
+            res = history_classifier_net.history.get('val_loss')[0]
+            self.classifier_network_val_loss_vec.append(res)
+            log_file.write("\nClassifier validation loss ---> " + str(res))
 
-            self.classifier_network_val_loss_vec.append(
-                history_classifier_net.history.get('val_loss')[0])
-            log_file.write("\nClassifier validation loss ---> " + str(
-                history_classifier_net.history.get('val_loss')[0]))
-
-            self.classifier_network_val_categ_acc_vec.append(
-                history_classifier_net.history.get('val_categorical_accuracy')[0])
-            log_file.write("\nClassifier validation categorical accuracy ---> " + str(
-                history_classifier_net.history.get('val_categorical_accuracy')[0]))
+            res = []
+            for metric in self.metrics:
+                res.append(history_classifier_net.history.get('val_' + metric)[0])
+            self.classifier_network_val_metrics_vec.append(res)
+            log_file.write("\nClassifier validation metrics ---> " + str(res))
 
             if do_test:
                 #   evaluation over the test set
@@ -164,11 +161,11 @@ class SimpleNetworkManager:
                 self.classifier_network_evaluation_on_test_set_loss_vec.append(
                     test_eval[0]
                 )
-                self.classifier_network_evaluation_on_test_set_accuracy_vec.append(
+                self.classifier_network_evaluation_on_test_set_metrics_vec.append(
                     test_eval[1]
                 )
 
-            ###########################  these operations needs prediction and argmax transformation  ##########################
+            #  these operations needs prediction and argmax transformation
             training_set_classes_supervision = np.argmax(training_supervision, axis=1)
             training_set_classes_prediction = np.argmax(
                 classifier_net_model.predict(x=training_set, batch_size=batch_size), axis=1)
@@ -220,23 +217,20 @@ class SimpleNetworkManager:
             ####################################################################################################################
 
             #   save all vectors
-            with open(self.results_folder + '/classifier_network_epochs.pkl', 'wb') as f:
-                pickle.dump(self.classifier_network_epochs, f)
             with open(self.results_folder + '/classifier_network_loss_vec.pkl', 'wb') as f:
                 pickle.dump(self.classifier_network_loss_vec, f)
             with open(self.results_folder + '/classifier_network_categ_acc_vec.pkl', 'wb') as f:
-                pickle.dump(self.classifier_network_categ_acc_vec, f)
+                pickle.dump(self.classifier_network_metrics_vec, f)
             with open(self.results_folder + '/classifier_network_val_loss_vec.pkl', 'wb') as f:
                 pickle.dump(self.classifier_network_val_loss_vec, f)
             with open(self.results_folder + '/classifier_network_val_categ_acc_vec.pkl', 'wb') as f:
-                pickle.dump(self.classifier_network_val_categ_acc_vec, f)
+                pickle.dump(self.classifier_network_val_metrics_vec, f)
 
             if do_test:
-                #   classifier_net_model.evaluate ---> ['loss', 'categorical_accuracy']
                 with open(self.results_folder + 'classifier_network_evaluation_on_test_set_loss_vec.pkl', 'wb') as f:
                     pickle.dump(self.classifier_network_evaluation_on_test_set_loss_vec, f)
                 with open(self.results_folder + 'classifier_network_evaluation_on_test_set_accuracy_vec.pkl', 'wb') as f:
-                    pickle.dump(self.classifier_network_evaluation_on_test_set_accuracy_vec, f)
+                    pickle.dump(self.classifier_network_evaluation_on_test_set_loss_vec, f)
 
             with open(self.results_folder + '/f1_value_training_vec.pkl', 'wb') as f:
                 pickle.dump(self.f1_value_training, f)
