@@ -4,3 +4,7 @@
 
 # MLToolsShed
 A set of tools to make programming with TensorFlow and Keras more high level.
+As first thing, in order to make it easier
+```console
+foo@bar:~$ python --user install required_pkg.txt
+```
